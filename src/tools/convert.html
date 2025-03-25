@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicMod - Convertir Formato de Imagen</title>
+    <link href="../output.css" rel="stylesheet">
+</head>
+<body class="bg-black text-white">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-md">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="../index.html">
+                        <svg class="w-8 h-8 text-blue-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <span class="ml-2 text-xl font-bold">PicMod</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <h1 class="text-4xl font-bold mb-8">Convertir Formato de Imagen</h1>
+            
+            <!-- Image Upload -->
+            <div class="drop-zone border-2 border-dashed border-gray-700 rounded-lg p-8 text-center mb-8 transition-colors duration-300">
+                <div class="flex flex-col items-center upload-content">
+                    <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    <p class="text-xl text-gray-400 mb-2">Arrastra y suelta tu imagen aquí</p>
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                    <button class="btn-primary mt-4" onclick="document.getElementById('fileInput').click()">
+                        Seleccionar Imagen
+                    </button>
+                </div>
+                <img class="image-preview hidden max-w-full max-h-96 mx-auto mt-4 rounded-lg">
+            </div>
+
+            <!-- Conversion Controls -->
+            <div class="bg-gray-900 rounded-lg p-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Formato Destino</label>
+                        <select id="targetFormat" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500">
+                            <option value="jpeg">JPEG</option>
+                            <option value="png">PNG</option>
+                            <option value="webp">WebP</option>
+                            <option value="bmp">BMP</option>
+                            <option value="tiff">TIFF</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Calidad</label>
+                        <select id="quality" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500">
+                            <option value="1">Máxima</option>
+                            <option value="0.8">Alta</option>
+                            <option value="0.6">Media</option>
+                            <option value="0.4">Baja</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-col md:flex-row gap-4 justify-center mt-8">
+                    <button id="convertBtn" class="btn-primary mt-6 w-full md:w-auto">
+                        Convertir Imagen
+                    </button>
+                </div>
+            </div>
+
+            <!-- Result -->
+            <div class="bg-gray-900 rounded-lg p-6">
+                <h2 class="text-xl font-bold mb-4">Resultado</h2>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-1">
+                        <img id="resultImage" class="max-w-full rounded-lg hidden">
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-gray-800 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold mb-2">Información de la Imagen</h3>
+                            <div class="space-y-2 text-gray-400">
+                                <p>Formato Original: <span id="originalFormat">-</span></p>
+                                <p>Nuevo Formato: <span id="newFormat">-</span></p>
+                                <p>Tamaño del Archivo: <span id="fileSize">-</span></p>
+                            </div>
+                        </div>
+                        <button id="downloadBtn" class="btn-primary mt-4 w-full hidden">
+                            Descargar Imagen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const imagePreview = document.querySelector('.image-preview');
+            const resultImage = document.getElementById('resultImage');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const targetFormat = document.getElementById('targetFormat');
+            const qualityInput = document.getElementById('quality');
+            const convertBtn = document.getElementById('convertBtn');
+            const originalFormat = document.getElementById('originalFormat');
+            const newFormat = document.getElementById('newFormat');
+            const fileSize = document.getElementById('fileSize');
+            const fileInput = document.getElementById('fileInput');
+
+            let originalImage = null;
+            let originalFile = null;
+
+            // Handle image upload
+            const dropZone = document.querySelector('.drop-zone');
+
+            fileInput.addEventListener('change', handleFileSelect);
+            dropZone.addEventListener('drop', handleDrop);
+
+            function handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            }
+
+            function handleFile(file) {
+                if (file.type.startsWith('image/')) {
+                    originalFile = file;
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.remove('hidden');
+                        document.querySelector('.upload-content').classList.add('hidden');
+                        originalImage = new Image();
+                        originalImage.src = e.target.result;
+                        originalImage.onload = function() {
+                            originalFormat.textContent = file.type.split('/')[1].toUpperCase();
+                            updateFileSize(file.size);
+                        };
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please upload an image file');
+                }
+            }
+
+            function updateFileSize(bytes) {
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                if (bytes === 0) return '0 Byte';
+                const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+                return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+            }
+
+            // Prevenir el comportamiento por defecto del formulario
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('border-blue-500');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('border-blue-500');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-blue-500');
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            });
+
+            // Handle conversion
+            convertBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Botón de conversión clickeado');
+                
+                if (!originalImage) {
+                    console.log('Error: No hay imagen cargada');
+                    alert('Please upload an image first');
+                    return;
+                }
+
+                console.log('Iniciando proceso de conversión...');
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = originalImage.width;
+                canvas.height = originalImage.height;
+                
+                ctx.drawImage(originalImage, 0, 0);
+                
+                const format = targetFormat.value;
+                const mimeType = `image/${format}`;
+                const quality = qualityInput.value / 100;
+                
+                resultImage.src = canvas.toDataURL(mimeType, quality);
+                resultImage.classList.remove('hidden');
+                downloadBtn.classList.remove('hidden');
+                newFormat.textContent = format.toUpperCase();
+                
+                // Calcular el tamaño del archivo convertido
+                const base64String = resultImage.src.split(',')[1];
+                const binaryString = atob(base64String);
+                const bytes = binaryString.length;
+                updateFileSize(bytes);
+                
+                console.log('Conversión completada exitosamente');
+            });
+
+            // Handle download
+            downloadBtn.addEventListener('click', () => {
+                const format = targetFormat.value;
+                const link = document.createElement('a');
+                link.download = `converted-image.${format}`;
+                link.href = resultImage.src;
+                link.click();
+            });
+        });
+    </script>
+</body>
+</html> 

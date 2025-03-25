@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicMod - Mejorar Imágenes</title>
+    <link href="../output.css" rel="stylesheet">
+</head>
+<body class="bg-black text-white">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-md">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="../index.html">
+                        <svg class="w-8 h-8 text-blue-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <span class="ml-2 text-xl font-bold">PicMod</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <h1 class="text-4xl font-bold mb-8">Mejorar Imágenes</h1>
+            
+            <!-- Image Upload -->
+            <div class="drop-zone border-2 border-dashed border-gray-700 rounded-lg p-8 text-center mb-8 transition-colors duration-300">
+                <div class="flex flex-col items-center upload-content">
+                    <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    <p class="text-xl text-gray-400 mb-2">Arrastra y suelta tu imagen aquí</p>
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                    <button class="btn-primary mt-4" onclick="document.getElementById('fileInput').click()">
+                        Seleccionar Imagen
+                    </button>
+                </div>
+                <img class="image-preview hidden max-w-full max-h-96 mx-auto mt-4 rounded-lg">
+            </div>
+
+            <!-- Enhancement Controls -->
+            <div class="bg-gray-900 rounded-lg p-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Nivel de Mejora</label>
+                        <select id="enhancementLevel" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500">
+                            <option value="low">Bajo (2x)</option>
+                            <option value="medium">Medio (4x)</option>
+                            <option value="high">Alto (8x)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Nitidez</label>
+                        <select id="sharpness" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500">
+                            <option value="0">Suave</option>
+                            <option value="25">Baja</option>
+                            <option value="50" selected>Normal</option>
+                            <option value="75">Alta</option>
+                            <option value="100">Máxima</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Reducción de Ruido</label>
+                        <select id="noiseReduction" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500">
+                            <option value="0">Ninguna</option>
+                            <option value="25">Baja</option>
+                            <option value="50">Media</option>
+                            <option value="75">Alta</option>
+                            <option value="100">Máxima</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Mejora de Detalles</label>
+                        <select id="detailEnhancement" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500">
+                            <option value="0">Baja</option>
+                            <option value="25">Media</option>
+                            <option value="50" selected="">Normal</option>
+                            <option value="75">Alta</option>
+                            <option value="100">Máxima</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result -->
+            <div class="bg-gray-900 rounded-lg p-6">
+                <h2 class="text-xl font-bold mb-4">Resultado</h2>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-1">
+                        <img id="resultImage" class="max-w-full rounded-lg hidden">
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-gray-800 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold mb-2">Información de la Imagen</h3>
+                            <div class="space-y-2 text-gray-400">
+                                <p>Nivel de Mejora: <span id="levelApplied">-</span></p>
+                                <p>Nitidez: <span id="sharpnessValue">-</span></p>
+                                <p>Reducción de Ruido: <span id="noiseValue">-</span></p>
+                                <p>Mejora de Detalles: <span id="detailValue">-</span></p>
+                            </div>
+                        </div>
+                        <button id="downloadBtn" class="btn-primary mt-4 w-full hidden">
+                            Descargar Imagen Mejorada
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const imagePreview = document.querySelector('.image-preview');
+            const resultImage = document.getElementById('resultImage');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const enhancementLevel = document.getElementById('enhancementLevel');
+            const sharpness = document.getElementById('sharpness');
+            const noiseReduction = document.getElementById('noiseReduction');
+            const detailEnhancement = document.getElementById('detailEnhancement');
+            const levelApplied = document.getElementById('levelApplied');
+            const sharpnessValue = document.getElementById('sharpnessValue');
+            const noiseValue = document.getElementById('noiseValue');
+            const detailValue = document.getElementById('detailValue');
+            const fileInput = document.getElementById('fileInput');
+
+            let originalImage = null;
+
+            // Handle image upload
+            const dropZone = document.querySelector('.drop-zone');
+
+            fileInput.addEventListener('change', handleFileSelect);
+            dropZone.addEventListener('drop', handleDrop);
+
+            function handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            }
+
+            function handleFile(file) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.remove('hidden');
+                        document.querySelector('.upload-content').classList.add('hidden');
+                        originalImage = new Image();
+                        originalImage.src = e.target.result;
+                        originalImage.onload = function() {
+                            applyEnhancement();
+                        };
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please upload an image file');
+                }
+            }
+
+            // Prevenir el comportamiento por defecto del formulario
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('border-blue-500');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('border-blue-500');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-blue-500');
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            });
+
+            function applyEnhancement() {
+                if (!originalImage) return;
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Calcular el factor de escala basado en el nivel de mejora
+                let scaleFactor = 1;
+                switch(enhancementLevel.value) {
+                    case 'low':
+                        scaleFactor = 2;
+                        break;
+                    case 'medium':
+                        scaleFactor = 4;
+                        break;
+                    case 'high':
+                        scaleFactor = 8;
+                        break;
+                }
+
+                // Establecer las dimensiones del canvas
+                canvas.width = originalImage.width * scaleFactor;
+                canvas.height = originalImage.height * scaleFactor;
+
+                // Aplicar suavizado de imagen
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+
+                // Dibujar la imagen original escalada
+                ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+
+                // Aplicar filtros de mejora
+                const sharpnessValue = sharpness.value / 100;
+                const noiseValue = noiseReduction.value / 100;
+                const detailValue = detailEnhancement.value / 100;
+
+                // Aplicar contraste y nitidez
+                ctx.filter = `contrast(${1 + detailValue}) brightness(${1 + sharpnessValue * 0.2})`;
+                ctx.drawImage(canvas, 0, 0);
+
+                // Aplicar reducción de ruido
+                if (noiseValue > 0) {
+                    ctx.filter = `blur(${noiseValue * 0.5}px)`;
+                    ctx.globalAlpha = noiseValue * 0.3;
+                    ctx.drawImage(canvas, 0, 0);
+                }
+
+                resultImage.src = canvas.toDataURL('image/png');
+                resultImage.classList.remove('hidden');
+                downloadBtn.classList.remove('hidden');
+                
+                levelApplied.textContent = enhancementLevel.value.charAt(0).toUpperCase() + enhancementLevel.value.slice(1);
+                sharpnessValue.textContent = `${Math.round(sharpness.value)}%`;
+                noiseValue.textContent = `${Math.round(noiseReduction.value)}%`;
+                detailValue.textContent = `${Math.round(detailEnhancement.value)}%`;
+            }
+
+            // Handle download
+            downloadBtn.addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.download = 'enhanced-image.png';
+                link.href = resultImage.src;
+                link.click();
+            });
+
+            // Update values in real-time
+            sharpness.addEventListener('input', () => {
+                sharpnessValue.textContent = `${Math.round(sharpness.value)}%`;
+                if (originalImage) applyEnhancement();
+            });
+
+            noiseReduction.addEventListener('input', () => {
+                noiseValue.textContent = `${Math.round(noiseReduction.value)}%`;
+                if (originalImage) applyEnhancement();
+            });
+
+            detailEnhancement.addEventListener('input', () => {
+                detailValue.textContent = `${Math.round(detailEnhancement.value)}%`;
+                if (originalImage) applyEnhancement();
+            });
+
+            enhancementLevel.addEventListener('change', () => {
+                if (originalImage) applyEnhancement();
+            });
+        });
+    </script>
+</body>
+</html> 

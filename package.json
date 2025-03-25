@@ -1,0 +1,27 @@
+{
+  "name": "picmod",
+  "version": "1.0.0",
+  "description": "Professional image editing web application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "tailwindcss -i ./src/input.css -o ./src/output.css",
+    "watch": "tailwindcss -i ./src/input.css -o ./src/output.css --watch"
+  },
+  "keywords": [
+    "image",
+    "editing",
+    "web",
+    "app"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.18.2",
+    "nodemailer": "^6.10.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

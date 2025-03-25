@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicMod - Herramientas</title>
+    <link href="output.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2L2 7L12 12L22 7L12 2Z'/><path d='M2 17L12 22L22 17'/><path d='M2 12L12 17L22 12'/></svg>">
+</head>
+<body class="bg-black text-white">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-md">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="index.html">
+                        <svg class="w-8 h-8 text-blue-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <span class="ml-2 text-xl font-bold">PicMod</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <h1 class="text-4xl font-bold mb-8">Herramientas de PicMod</h1>
+            
+            <div class="prose prose-invert max-w-none">
+                <p class="text-gray-400 mb-8">Explora nuestra colección completa de herramientas para el procesamiento de imágenes. Todas las herramientas son gratuitas y funcionan directamente en tu navegador.</p>
+
+                <!-- Herramientas de Edición Básica -->
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold mb-6">Edición Básica</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <a href="tools/resize.html" class="bg-gray-900 rounded-lg p-6 hover:bg-gray-800 transition-colors duration-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold">Redimensionar Imágenes</h3>
+                            </div>
+                            <p class="text-gray-400">Ajusta el tamaño de tus imágenes manteniendo la calidad y las proporciones.</p>
+                            <ul class="mt-4 text-sm text-gray-500 space-y-1">
+                                <li>• Mantiene la calidad original</li>
+                                <li>• Ajuste de proporciones</li>
+                                <li>• Vista previa en tiempo real</li>
+                            </ul>
+                        </a>
+
+                        <a href="tools/convert.html" class="bg-gray-900 rounded-lg p-6 hover:bg-gray-800 transition-colors duration-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold">Convertir Formato</h3>
+                            </div>
+                            <p class="text-gray-400">Convierte tus imágenes entre diferentes formatos con control de calidad.</p>
+                            <ul class="mt-4 text-sm text-gray-500 space-y-1">
+                                <li>• Soporta JPEG, PNG, WebP, BMP, TIFF</li>
+                                <li>• Control de calidad</li>
+                                <li>• Conversión instantánea</li>
+                            </ul>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Herramientas de Efectos -->
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold mb-6">Efectos y Mejoras</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <a href="tools/colorize.html" class="bg-gray-900 rounded-lg p-6 hover:bg-gray-800 transition-colors duration-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-pink-500/20 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold">Colorizar Imágenes</h3>
+                            </div>
+                            <p class="text-gray-400">Aplica efectos de color y ajusta el aspecto visual de tus imágenes.</p>
+                            <ul class="mt-4 text-sm text-gray-500 space-y-1">
+                                <li>• Efectos de color</li>
+                                <li>• Ajuste de brillo y contraste</li>
+                                <li>• Filtros especiales</li>
+                            </ul>
+                        </a>
+
+                        <a href="tools/enhance.html" class="bg-gray-900 rounded-lg p-6 hover:bg-gray-800 transition-colors duration-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold">Mejorar Imágenes</h3>
+                            </div>
+                            <p class="text-gray-400">Mejora la calidad y nitidez de tus imágenes.</p>
+                            <ul class="mt-4 text-sm text-gray-500 space-y-1">
+                                <li>• Mejora de nitidez</li>
+                                <li>• Reducción de ruido</li>
+                                <li>• Mejora de detalles</li>
+                            </ul>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Herramientas de Análisis -->
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold mb-6">Análisis y Extracción</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <a href="tools/text-extraction.html" class="bg-gray-900 rounded-lg p-6 hover:bg-gray-800 transition-colors duration-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-indigo-500/20 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold">Extracción de Texto</h3>
+                            </div>
+                            <p class="text-gray-400">Extrae texto de imágenes usando tecnología OCR avanzada.</p>
+                            <ul class="mt-4 text-sm text-gray-500 space-y-1">
+                                <li>• Soporte multiidioma</li>
+                                <li>• Alta precisión</li>
+                                <li>• Copia instantánea</li>
+                            </ul>
+                        </a>
+
+                        <a href="tools/color-extraction.html" class="bg-gray-900 rounded-lg p-6 hover:bg-gray-800 transition-colors duration-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold">Extracción de Colores</h3>
+                            </div>
+                            <p class="text-gray-400">Identifica y extrae códigos de color de cualquier imagen.</p>
+                            <ul class="mt-4 text-sm text-gray-500 space-y-1">
+                                <li>• Múltiples formatos de color</li>
+                                <li>• Paleta de colores</li>
+                                <li>• Copia en varios formatos</li>
+                            </ul>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div class="text-gray-400">
+                    © 2024 PicMod. Todos los derechos reservados.
+                </div>
+                <div class="flex space-x-6">
+                    <a href="privacy-policy.html" class="text-gray-400 hover:text-white transition-colors">Política de Privacidad</a>
+                    <a href="terms-of-service.html" class="text-gray-400 hover:text-white transition-colors">Términos de Servicio</a>
+                    <a href="contact.html" class="text-gray-400 hover:text-white transition-colors">Contacto</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html> 

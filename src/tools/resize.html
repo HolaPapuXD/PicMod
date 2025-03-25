@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicMod - Redimensionar Imágenes</title>
+    <link href="../output.css" rel="stylesheet">
+</head>
+<body class="bg-black text-white">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-md">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="../index.html">
+                        <svg class="w-8 h-8 text-blue-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <span class="ml-2 text-xl font-bold">PicMod</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <h1 class="text-4xl font-bold mb-8">Redimensionar Imágenes</h1>
+            
+            <!-- Image Upload -->
+            <div class="drop-zone border-2 border-dashed border-gray-700 rounded-lg p-8 text-center mb-8 transition-colors duration-300">
+                <div class="flex flex-col items-center upload-content">
+                    <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    <p class="text-xl text-gray-400 mb-2">Arrastra y suelta tu imagen aquí</p>
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                    <button class="btn-primary mt-4" onclick="document.getElementById('fileInput').click()">
+                        Seleccionar Imagen
+                    </button>
+                </div>
+                <img class="image-preview hidden max-w-full max-h-96 mx-auto mt-4 rounded-lg">
+            </div>
+
+            <!-- Resize Controls -->
+            <div class="bg-gray-900 rounded-lg p-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Ancho (px)</label>
+                        <input type="number" id="widthInput" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500" placeholder="Ancho">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Alto (px)</label>
+                        <input type="number" id="heightInput" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500" placeholder="Alto">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Mantener Proporción</label>
+                        <select id="aspectRatio" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500">
+                            <option value="original">Original</option>
+                            <option value="custom">Personalizada</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Calidad</label>
+                        <select id="quality" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500">
+                            <option value="0.8">Alta (80%)</option>
+                            <option value="0.6">Media (60%)</option>
+                            <option value="0.4">Baja (40%)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result -->
+            <div class="bg-gray-900 rounded-lg p-6">
+                <h2 class="text-xl font-bold mb-4">Resultado</h2>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-1">
+                        <img id="resultImage" class="max-w-full rounded-lg hidden">
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-gray-800 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold mb-2">Información de la Imagen</h3>
+                            <div class="space-y-2 text-gray-400">
+                                <p>Dimensiones Originales: <span id="originalDimensions">-</span></p>
+                                <p>Dimensiones Nuevas: <span id="newDimensions">-</span></p>
+                                <p>Calidad: <span id="qualityValue">-</span></p>
+                            </div>
+                        </div>
+                        <button id="downloadBtn" class="btn-primary mt-4 w-full hidden">
+                            Descargar Imagen Redimensionada
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const imagePreview = document.querySelector('.image-preview');
+            const resultImage = document.getElementById('resultImage');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const widthInput = document.getElementById('widthInput');
+            const heightInput = document.getElementById('heightInput');
+            const aspectRatio = document.getElementById('aspectRatio');
+            const quality = document.getElementById('quality');
+            const originalDimensions = document.getElementById('originalDimensions');
+            const newDimensions = document.getElementById('newDimensions');
+            const qualityValue = document.getElementById('qualityValue');
+            const fileInput = document.getElementById('fileInput');
+
+            let originalImage = null;
+            let originalWidth = 0;
+            let originalHeight = 0;
+
+            // Handle image upload
+            const dropZone = document.querySelector('.drop-zone');
+
+            fileInput.addEventListener('change', handleFileSelect);
+            dropZone.addEventListener('drop', handleDrop);
+
+            function handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            }
+
+            function handleFile(file) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.remove('hidden');
+                        document.querySelector('.upload-content').classList.add('hidden');
+                        originalImage = new Image();
+                        originalImage.src = e.target.result;
+                        originalImage.onload = function() {
+                            originalWidth = originalImage.width;
+                            originalHeight = originalImage.height;
+                            widthInput.value = originalWidth;
+                            heightInput.value = originalHeight;
+                            originalDimensions.textContent = `${originalWidth}x${originalHeight}`;
+                            applyResize();
+                        };
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Por favor, sube un archivo de imagen');
+                }
+            }
+
+            // Prevenir el comportamiento por defecto del formulario
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('border-blue-500');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('border-blue-500');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-blue-500');
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            });
+
+            function applyResize() {
+                if (!originalImage) return;
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                let newWidth = parseInt(widthInput.value);
+                let newHeight = parseInt(heightInput.value);
+
+                if (aspectRatio.value === 'original') {
+                    const ratio = originalWidth / originalHeight;
+                    if (widthInput.value) {
+                        newHeight = Math.round(newWidth / ratio);
+                        heightInput.value = newHeight;
+                    } else if (heightInput.value) {
+                        newWidth = Math.round(newHeight * ratio);
+                        widthInput.value = newWidth;
+                    }
+                }
+
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+
+                ctx.drawImage(originalImage, 0, 0, newWidth, newHeight);
+
+                resultImage.src = canvas.toDataURL('image/jpeg', parseFloat(quality.value));
+                resultImage.classList.remove('hidden');
+                downloadBtn.classList.remove('hidden');
+                
+                newDimensions.textContent = `${newWidth}x${newHeight}`;
+                qualityValue.textContent = `${Math.round(parseFloat(quality.value) * 100)}%`;
+            }
+
+            // Event Listeners
+            widthInput.addEventListener('input', () => {
+                if (aspectRatio.value === 'original' && originalImage) {
+                    const ratio = originalWidth / originalHeight;
+                    heightInput.value = Math.round(parseInt(widthInput.value) / ratio);
+                }
+                if (originalImage) applyResize();
+            });
+
+            heightInput.addEventListener('input', () => {
+                if (aspectRatio.value === 'original' && originalImage) {
+                    const ratio = originalWidth / originalHeight;
+                    widthInput.value = Math.round(parseInt(heightInput.value) * ratio);
+                }
+                if (originalImage) applyResize();
+            });
+
+            aspectRatio.addEventListener('change', () => {
+                if (originalImage) {
+                    if (aspectRatio.value === 'original') {
+                        const ratio = originalWidth / originalHeight;
+                        heightInput.value = Math.round(parseInt(widthInput.value) / ratio);
+                    }
+                    applyResize();
+                }
+            });
+
+            quality.addEventListener('change', () => {
+                if (originalImage) applyResize();
+            });
+
+            // Handle download
+            downloadBtn.addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.download = 'resized-image.jpg';
+                link.href = resultImage.src;
+                link.click();
+            });
+        });
+    </script>
+</body>
+</html> 

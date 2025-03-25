@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicMod - Extracción de Colores</title>
+    <link href="../output.css" rel="stylesheet">
+</head>
+<body class="bg-black text-white">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-md">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="../index.html">
+                        <svg class="w-8 h-8 text-blue-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <span class="ml-2 text-xl font-bold">PicMod</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <h1 class="text-4xl font-bold mb-8">Extracción de Colores</h1>
+            
+            <!-- Image Upload -->
+            <div class="drop-zone border-2 border-dashed border-gray-700 rounded-lg p-8 text-center mb-8 transition-colors duration-300">
+                <div class="flex flex-col items-center upload-content">
+                    <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    <p class="text-xl text-gray-400 mb-2">Arrastra y suelta tu imagen aquí</p>
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                    <button class="btn-primary mt-4" onclick="document.getElementById('fileInput').click()">
+                        Seleccionar Imagen
+                    </button>
+                </div>
+                <img class="image-preview hidden max-w-full max-h-96 mx-auto mt-4 rounded-lg cursor-crosshair">
+            </div>
+
+            <!-- Processing Options -->
+            <div class="bg-gray-900 rounded-lg p-6 mb-8">
+                <h2 class="text-xl font-bold mb-4">Información de Color</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Formato de Color</label>
+                        <select id="colorFormat" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500">
+                            <option value="hex">HEX</option>
+                            <option value="rgb">RGB</option>
+                            <option value="hsl">HSL</option>
+                            <option value="cmyk">CMYK</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Formato de Copia</label>
+                        <select id="copyFormat" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500">
+                            <option value="css">CSS</option>
+                            <option value="js">JavaScript</option>
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="bg-gray-900 rounded-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Código de Color</h2>
+                    <button onclick="copyToClipboard('colorCode')" class="btn-primary">
+                        Copiar Código
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div class="relative">
+                        <textarea id="colorCode" class="w-full h-32 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500" readonly></textarea>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-2">Vista Previa del Color</h3>
+                        <div class="flex items-start space-x-6">
+                            <div class="flex flex-col items-center">
+                                <div id="colorPreview" class="w-16 h-16 rounded-lg border border-gray-700"></div>
+                            </div>
+                            <div class="text-gray-400 space-y-2">
+                                <p class="text-sm">Haz clic en la imagen para extraer un color</p>
+                                <p class="text-sm">El color seleccionado aparecerá aquí</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const imagePreview = document.querySelector('.image-preview');
+            const colorPreview = document.getElementById('colorPreview');
+            const colorCode = document.getElementById('colorCode');
+            const colorFormat = document.getElementById('colorFormat');
+            const copyFormat = document.getElementById('copyFormat');
+            const fileInput = document.getElementById('fileInput');
+
+            let originalImage = null;
+
+            // Handle image upload
+            const dropZone = document.querySelector('.drop-zone');
+
+            fileInput.addEventListener('change', handleFileSelect);
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('border-blue-500');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('border-blue-500');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-blue-500');
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            });
+
+            function handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            }
+
+            function handleFile(file) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.remove('hidden');
+                        document.querySelector('.upload-content').classList.add('hidden');
+                        originalImage = new Image();
+                        originalImage.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please upload an image file');
+                }
+            }
+
+            // Color extraction
+            let colorPickerCursor = null;
+
+            function createColorPickerCursor() {
+                colorPickerCursor = document.createElement('div');
+                colorPickerCursor.className = 'color-picker-cursor';
+                colorPickerCursor.style.cssText = `
+                    position: fixed;
+                    width: 20px;
+                    height: 20px;
+                    border: 2px solid white;
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 1000;
+                    transform: translate(-50%, -50%);
+                    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+                `;
+                document.body.appendChild(colorPickerCursor);
+            }
+
+            function updateColorPickerCursor(e) {
+                if (!colorPickerCursor) return;
+                colorPickerCursor.style.left = e.clientX + 'px';
+                colorPickerCursor.style.top = e.clientY + 'px';
+            }
+
+            imagePreview.addEventListener('mousemove', (e) => {
+                if (!originalImage) return;
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = originalImage.width;
+                canvas.height = originalImage.height;
+                ctx.drawImage(originalImage, 0, 0);
+
+                const rect = imagePreview.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Scale coordinates to match original image size
+                const scaleX = originalImage.width / rect.width;
+                const scaleY = originalImage.height / rect.height;
+                const pixelX = Math.floor(x * scaleX);
+                const pixelY = Math.floor(y * scaleY);
+
+                const pixel = ctx.getImageData(pixelX, pixelY, 1, 1).data;
+                const r = pixel[0];
+                const g = pixel[1];
+                const b = pixel[2];
+
+                // Update cursor color
+                if (colorPickerCursor) {
+                    colorPickerCursor.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+                    updateColorPickerCursor(e);
+                }
+            });
+
+            imagePreview.addEventListener('mouseenter', () => {
+                if (!colorPickerCursor) {
+                    createColorPickerCursor();
+                }
+            });
+
+            imagePreview.addEventListener('mouseleave', () => {
+                if (colorPickerCursor) {
+                    colorPickerCursor.remove();
+                    colorPickerCursor = null;
+                }
+            });
+
+            imagePreview.addEventListener('click', (e) => {
+                if (!originalImage) return;
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = originalImage.width;
+                canvas.height = originalImage.height;
+                ctx.drawImage(originalImage, 0, 0);
+
+                const rect = imagePreview.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Scale coordinates to match original image size
+                const scaleX = originalImage.width / rect.width;
+                const scaleY = originalImage.height / rect.height;
+                const pixelX = Math.floor(x * scaleX);
+                const pixelY = Math.floor(y * scaleY);
+
+                const pixel = ctx.getImageData(pixelX, pixelY, 1, 1).data;
+                const r = pixel[0];
+                const g = pixel[1];
+                const b = pixel[2];
+
+                // Update color preview
+                colorPreview.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+
+                // Generate color code based on selected format
+                let code = '';
+                const format = colorFormat.value;
+                const copyType = copyFormat.value;
+
+                switch(format) {
+                    case 'hex':
+                        const hex = '#' + [r, g, b].map(x => {
+                            const hex = x.toString(16);
+                            return hex.length === 1 ? '0' + hex : hex;
+                        }).join('');
+                        code = copyType === 'css' ? `color: ${hex};` :
+                               copyType === 'js' ? `const color = "${hex}";` :
+                               copyType === 'python' ? `color = "${hex}"` :
+                               `String color = "${hex}";`;
+                        break;
+                    case 'rgb':
+                        code = copyType === 'css' ? `color: rgb(${r}, ${g}, ${b});` :
+                               copyType === 'js' ? `const color = "rgb(${r}, ${g}, ${b})";` :
+                               copyType === 'python' ? `color = "rgb(${r}, ${g}, ${b})"` :
+                               `String color = "rgb(${r}, ${g}, ${b})";`;
+                        break;
+                    case 'hsl':
+                        const hsl = rgbToHsl(r, g, b);
+                        code = copyType === 'css' ? `color: hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%);` :
+                               copyType === 'js' ? `const color = "hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)";` :
+                               copyType === 'python' ? `color = "hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)"` :
+                               `String color = "hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)";`;
+                        break;
+                    case 'cmyk':
+                        const cmyk = rgbToCmyk(r, g, b);
+                        code = copyType === 'css' ? `color: device-cmyk(${cmyk[0]}%, ${cmyk[1]}%, ${cmyk[2]}%, ${cmyk[3]}%);` :
+                               copyType === 'js' ? `const color = "cmyk(${cmyk[0]}%, ${cmyk[1]}%, ${cmyk[2]}%, ${cmyk[3]}%)";` :
+                               copyType === 'python' ? `color = "cmyk(${cmyk[0]}%, ${cmyk[1]}%, ${cmyk[2]}%, ${cmyk[3]}%)"` :
+                               `String color = "cmyk(${cmyk[0]}%, ${cmyk[1]}%, ${cmyk[2]}%, ${cmyk[3]}%)";`;
+                        break;
+                }
+
+                colorCode.value = code;
+            });
+
+            // Color format conversion functions
+            function rgbToHsl(r, g, b) {
+                r /= 255;
+                g /= 255;
+                b /= 255;
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+                let h, s, l = (max + min) / 2;
+
+                if (max === min) {
+                    h = s = 0;
+                } else {
+                    const d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                        case g: h = (b - r) / d + 2; break;
+                        case b: h = (r - g) / d + 4; break;
+                    }
+                    h /= 6;
+                }
+
+                return [
+                    Math.round(h * 360),
+                    Math.round(s * 100),
+                    Math.round(l * 100)
+                ];
+            }
+
+            function rgbToCmyk(r, g, b) {
+                r /= 255;
+                g /= 255;
+                b /= 255;
+                const k = 1 - Math.max(r, g, b);
+                const c = (1 - r - k) / (1 - k) || 0;
+                const m = (1 - g - k) / (1 - k) || 0;
+                const y = (1 - b - k) / (1 - k) || 0;
+
+                return [
+                    Math.round(c * 100),
+                    Math.round(m * 100),
+                    Math.round(y * 100),
+                    Math.round(k * 100)
+                ];
+            }
+
+            // Update color code when format changes
+            colorFormat.addEventListener('change', () => {
+                if (colorPreview.style.backgroundColor) {
+                    const event = new MouseEvent('click', {
+                        clientX: imagePreview.getBoundingClientRect().left + imagePreview.width / 2,
+                        clientY: imagePreview.getBoundingClientRect().top + imagePreview.height / 2
+                    });
+                    imagePreview.dispatchEvent(event);
+                }
+            });
+
+            copyFormat.addEventListener('change', () => {
+                if (colorPreview.style.backgroundColor) {
+                    const event = new MouseEvent('click', {
+                        clientX: imagePreview.getBoundingClientRect().left + imagePreview.width / 2,
+                        clientY: imagePreview.getBoundingClientRect().top + imagePreview.height / 2
+                    });
+                    imagePreview.dispatchEvent(event);
+                }
+            });
+
+            // Function to copy to clipboard
+            window.copyToClipboard = function(elementId) {
+                const element = document.getElementById(elementId);
+                element.select();
+                document.execCommand('copy');
+                
+                // Show notification
+                const notification = document.createElement('div');
+                notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+                notification.textContent = 'Copied to clipboard!';
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 2000);
+            };
+        });
+    </script>
+</body>
+</html> 
